@@ -7,13 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // 1. Cấu hình Database
+var connectionString = builder.Configuration.GetConnectionString("LittleHairSalonContext") ?? "";
 builder.Services.AddDbContext<LittleHairSalonContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LittleHairSalonContext")
-    ?? "Server=localhost;Database=LittleHairSalonDB;Trusted_Connection=True;TrustServerCertificate=True;",
-    sqlServerOptionsAction: sqlOptions =>
-    {
-        sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(30), null);
-    }));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // 2. Cấu hình Session & Caching
 builder.Services.AddDistributedMemoryCache();
