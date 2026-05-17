@@ -1,0 +1,87 @@
+﻿@model LittleHairSalon.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Thêm Nhân Viên Mới";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Thêm Nhân Viên</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index">Quản lý nhân viên</a></li>
+        <li class="breadcrumb-item active">Thêm mới</li>
+    </ol>
+
+    <div class="card mb-4 shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-user-plus me-1"></i> Thông tin nhân viên mới
+        </div>
+        <div class="card-body">
+            @* Khai báo tường minh Area và Controller để tránh lỗi Route *@
+            <form asp-area="Admin" asp-controller="NhanViens" asp-action="Create" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                
+                @* Đổi thành All để thấy được các lỗi ẩn như Database Timeout *@
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="TenNhanVien" class="form-label font-weight-bold">Họ và Tên</label>
+                        <input asp-for="TenNhanVien" class="form-control" placeholder="Nhập tên nhân viên..." required />
+                        <span asp-validation-for="TenNhanVien" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label font-weight-bold">Email liên hệ</label>
+                        <input asp-for="Email" class="form-control" type="email" placeholder="email@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ChucVu" class="form-label font-weight-bold">Chức vụ</label>
+                        <select asp-for="ChucVu" class="form-select">
+                            <option value="Stylist">Stylist</option>
+                            <option value="Barber">Barber</option>
+                            <option value="Nails Specialist">Nails Specialist</option>
+                            <option value="Quản lý">Quản lý</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label font-weight-bold">Ảnh đại diện</label>
+                        <input type="file" name="fAnh" class="form-control" accept="image/*" />
+                        <small class="text-muted">Định dạng hỗ trợ: .jpg, .png, .webp</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="KinhNghiem" class="form-label font-weight-bold">Kinh nghiệm / Mô tả</label>
+                    <textarea asp-for="KinhNghiem" class="form-control" rows="3" placeholder="Mô tả kỹ năng..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="TrangThai" class="form-label font-weight-bold">Trạng thái ban đầu</label>
+                    <select asp-for="TrangThai" class="form-select">
+                        <option value="1">Sẵn sàng làm việc</option>
+                        <option value="0">Tạm nghỉ</option>
+                    </select>
+                </div>
+
+                <div class="mt-4 border-top pt-3">
+                    <button type="submit" class="btn btn-success px-4 shadow-sm">
+                        <i class="fas fa-save me-1"></i> Lưu nhân viên
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4 shadow-sm">
+                        <i class="fas fa-arrow-left me-1"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,132 @@
+@model IEnumerable<LittleHairSalon.Models.Hang>
+@{
+    ViewData["Title"] = ViewBag.TieuDe ?? "Sản Phẩm";
+}
+
+<style>
+    .product-img-box {
+        aspect-ratio: 3/4;
+        background-color: #1a1a1a;
+        border-radius: 1.2rem;
+        overflow: hidden;
+        border: 1px solid #333;
+    }
+
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .product-card:hover .product-img-box img {
+        transform: scale(1.05);
+    }
+
+    .product-card {
+        background-color: #111;
+        border: 1px solid #222;
+        border-radius: 1.2rem;
+        transition: 0.3s;
+    }
+
+        .product-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-4px);
+        }
+
+    .btn-them-gio {
+        background-color: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-weight: 700;
+        width: 100%;
+        transition: 0.2s;
+    }
+
+        .btn-them-gio:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+    .filter-btn {
+        background: transparent;
+        border: 1px solid #333;
+        color: #aaa;
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+        .filter-btn:hover {
+            background-color: #ffd700;
+            border-color: #ffd700;
+            color: #000;
+        }
+</style>
+
+<div class="container py-5 mt-4">
+    <div class="mb-5">
+        <h2 class="fw-bold" style="color: #ffd700;">@ViewBag.TieuDe</h2>
+        <p style="color: #aaa;">Các sản phẩm chăm sóc tóc chính hãng tại Salon.</p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap mb-5">
+        <a href="/HangHoa/TatCa" class="filter-btn">Tất cả</a>
+        <a href="/HangHoa/DauGoi" class="filter-btn">Dầu Gội & Dầu Xả</a>
+        <a href="/HangHoa/SapVuoc" class="filter-btn">Sáp Vuốt Tóc</a>
+        <a href="/HangHoa/NhuomToc" class="filter-btn">Thuốc Nhuộm</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="product-card h-100 p-3">
+                        <div class="product-img-box mb-3">
+                            <a href="/HangHoa/ChiTiet/@item.MaHang">
+                                <img src="@(string.IsNullOrEmpty(item.HinhAnh) ? "https://via.placeholder.com/300x400" : (item.HinhAnh.StartsWith("http") ? item.HinhAnh : Url.Content("~/" + item.HinhAnh)))" alt="@item.TenHang">
+                            </a>
+                        </div>
+                        <h5 class="fw-bold mb-1" style="color: #fff;">@item.TenHang</h5>
+                        <p style="color: #aaa; font-size: 0.85rem;">@(item.MaLoaiNavigation?.TenLoai ?? "Sản phẩm")</p>
+                        <div class="fw-bold mb-3" style="color: #ffd700;">
+                            @(item.Gia.HasValue? item.Gia.Value.ToString("#,##0") + " ₫" : "Liên hệ")
+                        </div>
+                        <button onclick="themGio(@item.MaHang, this)" class="btn-them-gio">🛒 Thêm vào giỏ</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h4 style="color: #aaa;">Chưa có sản phẩm nào</h4>
+            <a href="/HangHoa/TatCa" class="filter-btn mt-3 d-inline-block">Xem tất cả</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function themGio(maHang, btn) {
+            fetch('/GioHang/ThemVaoGio?maHang=' + maHang, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    btn.textContent = '✓ Đã thêm!';
+                    btn.style.backgroundColor = '#22c55e';
+                    setTimeout(() => {
+                        btn.textContent = '🛒 Thêm vào giỏ';
+                        btn.style.backgroundColor = '';
+                    }, 2000);
+                }).catch(() => {});
+        }
+    </script>
+}

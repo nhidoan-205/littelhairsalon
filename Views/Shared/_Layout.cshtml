@@ -1,0 +1,636 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LittleHairSalon</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <style>
+
+        :root {
+            --primary-gold: #ffd700;
+            --dark-bg: #000000;
+            --card-bg: #141414;
+            --text-main: #ffffff;
+            --text-sub: #bdbdbd;
+            --border-color: #2b2b2b;
+            --font-main: 'Roboto',sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--dark-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            background: #000;
+            padding: 18px 0;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: 0.3s;
+            margin: 0 8px;
+        }
+
+            .nav-link:hover {
+                color: var(--primary-gold) !important;
+            }
+
+        .btn-cart-stitch {
+            background: var(--primary-gold);
+            color: #000;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+            .btn-cart-stitch:hover {
+                transform: translateY(-2px);
+                color: #000;
+            }
+
+        .btn-auth {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-register {
+            background: white;
+            color: black;
+            padding: 10px 22px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* DROPDOWN */
+
+        .dropdown-menu {
+            background: #121212;
+            border: 1px solid #2b2b2b;
+            border-radius: 15px;
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            color: white !important;
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+
+            .dropdown-item:hover {
+                background: #232323;
+            }
+
+        /* HERO */
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+
+        .hero-desc {
+            color: #c7c7c7;
+            font-size: 1.3rem;
+            line-height: 1.8;
+        }
+
+        /* BUTTON */
+
+        .btn-gold {
+            background: var(--primary-gold);
+            color: black;
+            border: none;
+            border-radius: 50px;
+            padding: 16px 34px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .btn-gold:hover {
+                transform: translateY(-3px);
+                color: black;
+            }
+
+        .btn-outline-gold {
+            border: 2px solid var(--primary-gold);
+            color: var(--primary-gold);
+            border-radius: 50px;
+            padding: 14px 34px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .btn-outline-gold:hover {
+                background: var(--primary-gold);
+                color: black;
+            }
+
+        /* CHATBOT */
+
+        #chat-bubble {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary-gold);
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 0 30px rgba(255,215,0,0.45);
+        }
+
+        #chat-box {
+            position: fixed;
+            bottom: 100px;
+            right: 25px;
+            width: 380px;
+            height: 620px;
+            background: #0d0d0d;
+            border: 1px solid #252525;
+            border-radius: 24px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.7);
+        }
+
+        /* HEADER CHAT */
+
+        .chat-header {
+            background: #111;
+            border-bottom: 1px solid #222;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* MESSAGES */
+
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .msg-bot {
+            align-self: flex-start;
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 16px;
+            border-radius: 18px 18px 18px 5px;
+            max-width: 85%;
+            line-height: 1.6;
+            font-size: 0.96rem;
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: var(--primary-gold);
+            color: #000 !important;
+            padding: 14px 16px;
+            border-radius: 18px 18px 5px 18px;
+            max-width: 85%;
+            font-weight: 500;
+            line-height: 1.6;
+            font-size: 0.96rem;
+        }
+
+        /* INPUT */
+
+        .chat-input-area {
+            border-top: 1px solid #222;
+            padding: 16px;
+            display: flex;
+            gap: 10px;
+        }
+
+        #chat-input {
+            flex: 1;
+            background: #161616;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 16px;
+            outline: none;
+        }
+
+            #chat-input::placeholder {
+                color: #888;
+            }
+
+        .chat-send-btn {
+            background: var(--primary-gold);
+            color: black;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* BUTTON GỢI Ý */
+
+        .suggest-btn {
+            background: #141414;
+            color: var(--primary-gold);
+            border: 1px solid #3a3200;
+            border-radius: 50px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+            .suggest-btn:hover {
+                background: var(--primary-gold);
+                color: black;
+            }
+
+        /* SCROLL */
+
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 20px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #050505;
+            border-top: 1px solid #1f1f1f;
+        }
+
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/TrangChu">
+                LittleHairSalon
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="material-symbols-outlined" style="color: var(--primary-gold);">menu</span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="/TrangChu">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/TrangChu/DichVu">Dịch vụ</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/DatLich" style="color: #ffcc00 !important; font-weight: bold;">ĐẶT LỊCH NGAY</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Sản phẩm</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/HangHoa/DauGoi">🧴 Dầu Gội & Dầu Xả</a></li>
+                            <li><a class="dropdown-item" href="/HangHoa/SapVuoc">💈 Sáp Vuốt Tóc</a></li>
+                            <li><a class="dropdown-item" href="/HangHoa/NhuomToc">🎨 Thuốc Nhuộm Tóc</a></li>
+                            <li><hr class="dropdown-divider border-secondary"></li>
+                            <li><a class="dropdown-item" href="/HangHoa/TatCa" style="color: #ffd700 !important;">Xem tất cả</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/TrangChu/LienHe">Liên hệ</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-4">
+                    <a href="/GioHang" class="btn-cart-stitch position-relative">
+                        <span class="material-symbols-outlined">shopping_bag</span>
+                        <span>Giỏ hàng</span>
+                        @await Component.InvokeAsync("GioHangWidget")
+                    </a>
+
+                    <div class="border-start ps-4" style="border-color: #333 !important;">
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("TenDangNhap") != null)
+                        {
+                            <div class="dropdown">
+                                <a class="btn-auth dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                                    <span class="material-symbols-outlined" style="color: var(--primary-gold);">account_circle</span>
+                                    <span>@HttpContextAccessor.HttpContext.Session.GetString("TenDangNhap")</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end mt-2 shadow">
+                                    @if (HttpContextAccessor.HttpContext.Session.GetString("VaiTro") == "Admin")
+                                    {
+                                        <li><a class="dropdown-item text-warning fw-bold" href="/Admin/HomeAdmin">Quản trị Admin</a></li>
+                                        <li><hr class="dropdown-divider border-secondary"></li>
+                                    }
+                                    <li><a class="dropdown-item" href="/KhachHang/DonHangCuaToi">Đơn hàng của tôi</a></li>
+                                    <li><a class="dropdown-item text-danger fw-bold" href="/TaiKhoan/DangXuat">Đăng xuất</a></li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center gap-3">
+                                <a href="/TaiKhoan/DangNhap" class="btn-auth">Đăng Nhập</a>
+                                <a href="/TaiKhoan/DangKy" class="btn-register">Đăng Ký</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div style="height: 85px;"></div>
+
+    <div style="background: linear-gradient(90deg, #ffd700, #ffaa00, #ffd700); padding: 12px 0; text-align: center; position: relative; z-index: 999;">
+        <div class="container d-flex align-items-center justify-content-center gap-3 flex-wrap">
+            <span style="font-weight: 800; color: #000;">GIẢM NGAY 15% — Đặt lịch trước ít nhất 1 ngày!</span>
+            <a href="/DatLich" style="background: #000; color: #ffd700; font-weight: 700; padding: 6px 20px; border-radius: 50px; text-decoration: none; font-size: 0.9rem;">Đặt lịch ngay →</a>
+        </div>
+    </div>
+
+    <main class="flex-grow-1">
+        @RenderBody()
+    </main>
+
+    <footer class="mt-auto py-4 text-center border-top border-secondary">
+        <div class="container">
+            <p class="mb-0 text-muted">&copy; 2026 LittleHairSalon - Ghiền làm đẹp.</p>
+        </div>
+    </footer>
+
+    ```html
+    <!-- CHATBOT -->
+    <button id="chat-bubble" onclick="toggleChat()">
+        💬
+    </button>
+
+    <div id="chat-box">
+
+        <div style="
+        background:#1a1a00;
+        padding:15px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;">
+
+            <span style="font-weight:bold;">
+                Trợ lý LittleHairSalon
+            </span>
+
+            <button onclick="toggleChat()"
+                    style="
+                background:none;
+                border:none;
+                color:#aaa;
+                cursor:pointer;">
+
+                ✕
+            </button>
+        </div>
+
+        <div id="chat-messages">
+
+            <div class="msg-bot">
+
+                ✨ Xin chào
+                <b>
+                    @(HttpContextAccessor.HttpContext.Session.GetString("TenDangNhap")
+                                        ?? "quý khách")
+                </b>!
+
+                LittleHairSalon rất vui được phục vụ bạn 💛
+
+            </div>
+
+            <!-- Gợi ý -->
+            <div class="d-flex flex-wrap gap-2 mt-2 px-2 pb-2">
+
+                <button class="suggest-btn"
+                        onclick="quickMessage('Tư vấn cắt tóc nam')">
+                    ✂️ Cắt tóc nam
+                </button>
+
+                <button class="suggest-btn"
+                        onclick="quickMessage('Tư vấn cắt tóc nữ')">
+                    💇 Cắt tóc nữ
+                </button>
+
+                <button class="suggest-btn"
+                        onclick="quickMessage('Bảng giá nhuộm tóc')">
+                    🎨 Nhuộm tóc
+                </button>
+
+                <button class="suggest-btn"
+                        onclick="quickMessage('Gội đầu dưỡng sinh')">
+                    💆 Gội dưỡng sinh
+                </button>
+
+            </div>
+
+        </div>
+
+        <div style="
+        padding:15px;
+        display:flex;
+        gap:10px;
+        border-top:1px solid #222;">
+
+            <input id="chat-input"
+                   type="text"
+                   placeholder="Nhập tin nhắn..."
+                   style="
+               flex:1;
+               background:#1a1a1a;
+               border:1px solid #333;
+               color:white;
+               padding:8px;
+               border-radius:20px;
+               outline:none;">
+
+            <button onclick="sendMsg()"
+                    style="
+                background:var(--primary-gold);
+                border:none;
+                padding:8px 15px;
+                border-radius:20px;
+                cursor:pointer;
+                font-weight:bold;">
+
+                Gửi
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+
+        function toggleChat() {
+
+            const box =
+                document.getElementById('chat-box');
+
+            box.style.display =
+                box.style.display === 'flex'
+                ? 'none'
+                : 'flex';
+        }
+
+        async function sendMsg() {
+
+            const input =
+                document.getElementById('chat-input');
+
+            const message =
+                input.value.trim();
+
+            if (!message) return;
+
+            const msgArea =
+                document.getElementById('chat-messages');
+
+            // user
+            const userMsg =
+                document.createElement('div');
+
+            userMsg.className = 'msg-user';
+
+            userMsg.textContent = message;
+
+            msgArea.appendChild(userMsg);
+
+            input.value = '';
+
+            msgArea.scrollTop =
+                msgArea.scrollHeight;
+
+            try {
+
+                const response =
+                    await fetch('/Chatbot/Chat', {
+
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            message: message
+                        })
+                    });
+
+                const data =
+                    await response.json();
+
+                // bot
+                const botMsg =
+                    document.createElement('div');
+
+                botMsg.className = 'msg-bot';
+
+                botMsg.textContent = data.reply;
+
+                msgArea.appendChild(botMsg);
+
+                msgArea.scrollTop =
+                    msgArea.scrollHeight;
+
+            }
+            catch {
+
+                const botMsg =
+                    document.createElement('div');
+
+                botMsg.className = 'msg-bot';
+
+                botMsg.textContent =
+                    'Không thể kết nối chatbot';
+
+                msgArea.appendChild(botMsg);
+            }
+        }
+
+        function quickMessage(text) {
+
+            document.getElementById('chat-input').value = text;
+
+            sendMsg();
+        }
+
+        document
+            .getElementById('chat-input')
+            .addEventListener('keypress', function (e) {
+
+                if (e.key === 'Enter') {
+
+                    sendMsg();
+                }
+            });
+
+    </script>
+
+</body>
+</html>
+```
+

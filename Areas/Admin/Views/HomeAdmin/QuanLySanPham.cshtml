@@ -1,0 +1,87 @@
+﻿@model IEnumerable<LittleHairSalon.Models.Hang>
+@{
+    ViewData["Title"] = "Quản lý Sản Phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><strong>Thành công!</strong> @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-alert="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1"><i class="bi bi-box-seam me-2 text-primary"></i>Kho Sản Phẩm</h4>
+        <small class="text-muted">Quản lý danh sách, giá bán và thông tin sản phẩm của Lá Beauty</small>
+    </div>
+    <a asp-action="ThemSanPham" class="btn btn-primary fw-bold shadow-sm rounded-pill px-4 py-2 d-flex align-items-center">
+        <i class="bi bi-plus-circle me-2 fs-5"></i> Thêm Sản Phẩm
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h6 class="m-0 fw-bold text-dark">Tất cả sản phẩm (@Model.Count())</h6>
+
+        <form method="get" asp-action="QuanLySanPham" class="input-group" style="width: 300px;">
+            <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control form-control-sm rounded-start-pill border-end-0" placeholder="Tìm tên sản phẩm...">
+            <button class="btn btn-sm btn-outline-primary rounded-end-pill border-start-0" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 text-center">#ID</th>
+                        <th>Hình Ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Phân Loại</th>
+                        <th>Giá Bán</th>
+                        <th class="text-center pe-4">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 text-center text-muted fw-bold">@item.MaHang</td>
+                            <td>
+                                <img src="@(string.IsNullOrEmpty(item.HinhAnh) ? "https://via.placeholder.com/60" : item.HinhAnh)"
+                                     class="rounded-3 shadow-sm border" style="width: 60px; height: 60px; object-fit: cover;" />
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark text-truncate" style="max-width: 250px;">@item.TenHang</div>
+                                <small class="text-muted text-truncate d-block" style="max-width: 250px;">@item.MoTa</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info px-3 py-2 rounded-pill">
+                                    @(item.MaLoaiNavigation?.TenLoai ?? "Chưa phân loại")
+                                </span>
+                            </td>
+                            <td class="text-success fw-bold">
+                                @(item.Gia.HasValue? item.Gia.Value.ToString("#,##0") : "0") đ
+                            </td>
+                            <td class="text-center pe-4">
+                                <a asp-action="SuaSanPham" asp-route-id="@item.MaHang" class="btn btn-sm btn-outline-primary rounded-circle" title="Sửa">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <form asp-action="XoaSanPham" asp-route-id="@item.MaHang" method="post" class="d-inline" onsubmit="return confirm('Xóa sản phẩm này?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle ms-1" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

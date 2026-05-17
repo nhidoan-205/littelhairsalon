@@ -1,0 +1,59 @@
+﻿@model IEnumerable<LittleHairSalon.Models.KhachHang>
+
+@{
+    ViewData["Title"] = "Quản lý Khách Hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Danh Sách Khách Hàng</h1>
+    
+    <div class="card mb-4 shadow border-0 mt-3">
+        <div class="card-header bg-dark text-white">
+            <i class="fas fa-users me-1"></i> Thông tin tài khoản khách hàng
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã KH</th>
+                            <th>Họ Tên</th>
+                            <th>Điện Thoại</th>
+                            <th>Email</th>
+                            <th>Tên Đăng Nhập</th>
+                            <th>Vai Trò</th>
+                            <th class="text-center">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>#@item.MaKh</td>
+                                <td><strong>@item.HoTen</strong></td>
+                                <td>@item.DienThoai</td>
+                                <td>@item.Email</td>
+                                <td><span class="badge bg-light text-dark border">@item.TenDangNhap</span></td>
+                                <td>
+                                    <span class="badge @(item.VaiTro == "Admin" ? "bg-danger" : "bg-primary")">
+                                        @item.VaiTro
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Nút Xóa với xác nhận -->
+                                    <form asp-area="Admin" asp-controller="KhachHangs" asp-action="Delete" asp-route-id="@item.MaKh" method="post"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa khách hàng này?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

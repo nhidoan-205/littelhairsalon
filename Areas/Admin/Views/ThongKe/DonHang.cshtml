@@ -1,0 +1,70 @@
+﻿```cshtml
+@model IEnumerable<LittleHairSalon.Models.LichDat>
+
+@{
+    ViewData["Title"] = "Đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Danh sách đơn hàng</h2>
+            <p class="text-muted">
+                Quản lý toàn bộ lịch đặt của khách hàng
+            </p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow rounded-4">
+
+        <div class="card-body">
+
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Mã lịch</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    ```cshtml
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.MaLichDat</td>
+
+                            <td>
+                                @(item.KhachHang != null
+                                                            ? item.KhachHang.HoTen
+                                                            : "Khách lẻ")
+                            </td>
+
+                            <td>
+                                @(item.NgayDat?.ToString("dd/MM/yyyy"))
+                            </td>
+
+                            <td class="fw-bold text-success">
+                                @(item.DichVu != null
+                                                            ? String.Format("{0:0,0} đ", item.DichVu.Gia)
+                                                            : "0 đ")
+                            </td>
+                        </tr>
+                    
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+

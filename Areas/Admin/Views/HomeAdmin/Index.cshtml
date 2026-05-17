@@ -1,0 +1,246 @@
+﻿
+@{
+    ViewData["Title"] = "Tổng quan";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 rounded-4 mb-4">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Thành công!</strong> @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Dashboard</h2>
+        <p class="text-muted mb-0">
+            Tổng quan hoạt động của LittleHairSalon
+        </p>
+    </div>
+
+    <div class="bg-white shadow-sm rounded-4 px-4 py-3">
+        <i class="bi bi-calendar-event text-primary me-2"></i>
+        <span class="fw-semibold">
+            @DateTime.Now.ToString("dd/MM/yyyy")
+        </span>
+    </div>
+</div>
+
+<!-- STATISTICS -->
+<div class="row g-4 mb-4">
+
+    <!-- DOANH THU -->
+    <div class="col-lg-4 col-md-6">
+        <a asp-area="Admin"
+           asp-controller="ThongKe"
+           asp-action="DoanhThu"
+           class="dashboard-link">
+            <div class="dashboard-card revenue-card">
+
+                <div>
+                    <p class="card-title-custom">
+                        Tổng Doanh Thu
+                    </p>
+
+                    <h3 class="fw-bold text-white"> @(ViewBag.DoanhThu != null ? String.Format("{0:N0} đ", ViewBag.DoanhThu) : "0 đ") </h3>
+                </div>
+
+                <div class="dashboard-icon">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+
+            </div>
+        </a>
+    </div>
+
+    <!-- DON HANG -->
+    <div class="col-lg-4 col-md-6">
+        <a asp-area="Admin"
+           asp-controller="ThongKe"
+           asp-action="DonHang"
+           class="dashboard-link">
+
+            <div class="dashboard-card order-card">
+
+                <div>
+                    <p class="card-title-custom">
+                        Tổng Đơn Hàng
+                    </p>
+
+                    <h3 class="fw-bold text-white">
+                        @ViewBag.TongDonHang
+                    </h3>
+                </div>
+
+                <div class="dashboard-icon">
+                    <i class="bi bi-bag-check"></i>
+                </div>
+
+            </div>
+        </a>
+    </div>
+
+    <!-- SAN PHAM -->
+    <div class="col-lg-4 col-md-6">
+        <a asp-area="Admin"
+           asp-controller="DichVus"
+           asp-action="Index"
+           class="dashboard-link">
+
+            <div class="dashboard-card product-card">
+
+                <div>
+                    <p class="card-title-custom">
+                        Sản Phẩm Đang Bán
+                    </p>
+
+                    <h3 class="fw-bold text-white">
+                        @ViewBag.TongSanPham
+                    </h3>
+                </div>
+
+                <div class="dashboard-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+    <div class="card-header bg-white border-0 py-4 px-4">
+        <h5 class="fw-bold mb-0">
+            <i class="bi bi-shield-check text-primary me-2"></i>
+            Trung tâm quản trị
+        </h5>
+    </div>
+
+    <div class="card-body text-center py-5">
+
+        <img src="https://cdni.iconscout.com/illustration/premium/thumb/web-analytics-illustration-download-in-svg-png-gif-file-formats--data-analysis-stats-business-finance-pack-illustrations-3309941.png"
+             class="img-fluid mb-4"
+             style="max-width: 320px;" />
+
+        <h4 class="fw-bold text-dark mb-3">
+            Hệ thống đang hoạt động ổn định
+        </h4>
+
+        <p class="text-muted mx-auto"
+           style="max-width: 650px; line-height: 1.8;">
+
+            
+        </p>
+
+    </div>
+</div>
+
+```html
+<style>
+
+    body {
+        background: #f4f6f9;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    /* CARD */
+    .dashboard-card {
+        border-radius: 24px;
+        padding: 30px;
+        min-height: 170px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+        }
+
+    /* CARD COLORS */
+    .revenue-card {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .order-card {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+    }
+
+    .product-card {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    /* TEXT */
+    .card-title-custom {
+        font-size: 17px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.85);
+        margin-bottom: 16px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 42px;
+        font-weight: 800;
+        color: white;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    /* ICON */
+    .dashboard-icon {
+        width: 90px;
+        height: 90px;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+        .dashboard-icon i {
+            font-size: 42px;
+            color: rgba(255,255,255,0.95);
+        }
+
+    /* HEADER */
+    .dashboard-header {
+        margin-bottom: 30px;
+    }
+
+        .dashboard-header h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .dashboard-header p {
+            color: #6b7280;
+            font-size: 16px;
+            margin-top: 6px;
+        }
+
+    /* DATE BOX */
+    .date-box {
+        background: white;
+        border-radius: 18px;
+        padding: 14px 24px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        font-weight: 600;
+        color: #111827;
+    }
+
+</style>
+```
+

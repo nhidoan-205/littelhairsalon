@@ -1,0 +1,102 @@
+﻿@model IEnumerable<LittleHairSalon.Models.DichVu>
+
+@{
+    ViewData["Title"] = "Quản Lý Dịch Vụ";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <div class="card mb-4 mt-4 shadow border-0">
+        <!-- Tiêu đề và nút thêm mới -->
+        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+            <h3 class="mb-0 fw-bold"><i class="fas fa-cut me-2"></i>DANH SÁCH DỊCH VỤ ADMIN</h3>
+            <a asp-action="Create" class="btn btn-dark fw-bold">
+                <i class="fas fa-plus-circle me-1"></i> THÊM DỊCH VỤ MỚI
+            </a>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" style="width: 15%;">Ảnh</th>
+                            <th style="width: 25%;">Tên Dịch Vụ</th>
+                            <th style="width: 15%;">Giá (VNĐ)</th>
+                            <th style="width: 15%;">Thời Gian</th>
+                            <th style="width: 15%;">Mô Tả</th>
+                            <th class="text-center" style="width: 15%;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.AnhDichVu))
+                                        {
+                                            @* Kiểm tra nếu là Link web (http) hay là File nội bộ *@
+                                            string imageSrc = item.AnhDichVu.StartsWith("http")
+                                                              ? item.AnhDichVu
+                                                              : Url.Content("~/images/dichvu/" + item.AnhDichVu);
+
+                                            <img src="@imageSrc"
+                                                 alt="@item.TenDichVu"
+                                                 style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"
+                                                 onerror="this.onerror=null;this.src='/images/no-image.png';" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/no-image.png" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;" />
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-uppercase text-dark">@item.TenDichVu</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-danger fw-bold">@item.Gia.ToString("#,##0")</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">@item.ThoiGianUocTinh phút</span>
+                                    </td>
+                                    <td>
+                                        <div class="text-muted text-wrap" style="max-width: 200px; font-size: 0.85rem;">
+                                            @item.MoTa
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a asp-action="Edit" asp-route-id="@item.MaDichVu"
+                                                   class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </a>
+                                            
+                                            <form asp-action="Delete" asp-route-id="@item.MaDichVu" method="post"
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1" title="Xóa">
+                                                    <i class="fas fa-trash"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="fas fa-box-open fa-3x mb-3 d-block"></i>
+                                    Chưa có dịch vụ nào trong hệ thống.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

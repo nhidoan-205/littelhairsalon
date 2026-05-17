@@ -1,0 +1,16 @@
+﻿
+using Microsoft.EntityFrameworkCore;
+
+public IActionResult DoanhThu()
+{
+    var lichDat = _context.LichDats
+        .Include(x => x.KhachHang)
+        .Include(x => x.DichVu)
+        .ToList();
+
+    ViewBag.TongDoanhThu = lichDat
+        .Where(x => x.DichVu != null)
+        .Sum(x => x.DichVu.Gia);
+
+    return View(lichDat);
+}

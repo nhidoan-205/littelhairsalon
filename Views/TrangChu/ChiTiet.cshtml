@@ -1,0 +1,177 @@
+@model LittleHairSalon.Models.Hang
+
+@{
+    ViewData["Title"] = Model.TenHang + " -LittleHairSalon";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gold: #ffd700;
+        --dark-bg: #000000;
+        --card-bg: #1a1a1a;
+        --text-main: #ffffff;
+        --text-muted: #aaaaaa;
+        --border-color: #333333;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-main);
+    }
+
+    /* --- BREADCRUMB (Thanh điều hướng) --- */
+    .breadcrumb-item a { color: var(--text-muted); transition: 0.3s; }
+    .breadcrumb-item a:hover { color: var(--primary-gold); }
+    .breadcrumb-item.active { color: var(--primary-gold); font-weight: 600; }
+    .breadcrumb-item + .breadcrumb-item::before { color: #666; } /* Màu dấu gạch chéo */
+
+    /* --- CARD SẢN PHẨM --- */
+    .product-detail-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    /* --- HÌNH ẢNH --- */
+    .product-img-wrapper {
+        background-color: var(--dark-bg);
+        border-radius: 1rem;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .product-img-wrapper img {
+        border-radius: 0.5rem;
+        max-height: 450px;
+        object-fit: contain;
+    }
+
+    /* --- LABEL & TEXT --- */
+    .badge-category {
+        background-color: var(--primary-gold);
+        color: var(--dark-bg);
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+    }
+    .text-stock { color: var(--primary-gold); font-weight: 700; }
+    .product-price { color: var(--primary-gold); font-size: 2.5rem; letter-spacing: -1px; }
+    
+    /* --- NÚT BẤM --- */
+    .btn-add-cart {
+        background-color: var(--primary-gold);
+        color: var(--dark-bg);
+        font-weight: 700;
+        border-radius: 50px;
+        transition: 0.3s;
+        border: none;
+    }
+    .btn-add-cart:hover {
+        background-color: #ffffff;
+        color: var(--dark-bg);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-outline-back {
+        background-color: transparent;
+        color: var(--primary-gold);
+        font-weight: 700;
+        border: 2px solid rgba(255, 215, 0, 0.5);
+        border-radius: 50px;
+        transition: 0.3s;
+    }
+    .btn-outline-back:hover {
+        background-color: var(--primary-gold);
+        color: var(--dark-bg);
+        border-color: var(--primary-gold);
+    }
+
+    /* --- TRUST BADGES (Chính hãng, Đổi trả...) --- */
+    .trust-badge-icon {
+        color: var(--primary-gold);
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+    }
+    .trust-badge-text { color: var(--text-main); font-weight: 600; font-size: 0.9rem; }
+</style>
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door-fill me-1"></i>Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/HangHoa" class="text-decoration-none">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.TenHang</li>
+        </ol>
+    </nav>
+
+    <div class="card product-detail-card mt-2">
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-5">
+                
+                <div class="col-md-5">
+                    <div class="product-img-wrapper">
+                        <img src="@(string.IsNullOrEmpty(Model.HinhAnh) ? "https://via.placeholder.com/400x500" : (Model.HinhAnh.StartsWith("http") ? Model.HinhAnh : "/" + Model.HinhAnh.TrimStart('/')))" class="img-fluid w-100" alt="@Model.TenHang">
+                    </div>
+                </div>
+
+                <div class="col-md-7 d-flex flex-column justify-content-center">
+                    <h1 class="fw-bold text-uppercase mb-3" style="color: var(--text-main); font-size: 2.2rem;">@Model.TenHang</h1>
+
+                    <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-secondary">
+                        <span class="badge-category me-3">
+                            @(Model.MaLoaiNavigation != null ? Model.MaLoaiNavigation.TenLoai : "Sản phẩm")
+                        </span>
+                        <span class="text-muted">| <span class="ms-2">Tình trạng: </span><span class="text-stock"><i class="bi bi-check-circle-fill me-1"></i>Còn hàng</span></span>
+                    </div>
+
+                    <h2 class="product-price fw-bold mb-4">
+                        @(Model.Gia.HasValue ? String.Format("{0:0,0}", Model.Gia) : "Liên hệ") đ
+                    </h2>
+
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-3" style="color: var(--text-main);">Thông tin sản phẩm:</h5>
+                        <p style="color: var(--text-muted); line-height: 1.8; font-size: 1.05rem;">
+                            @(Model.MoTa ?? "Salon đang cập nhật thông tin chi tiết cho sản phẩm này. Cam kết hàng chính hãng 100% được sử dụng trực tiếp tại Lá Hair Salon.")
+                        </p>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 mt-auto">
+                        <button type="button" onclick="themVaoGioAjax(@Model.MaHang, this)"
+                                class="btn btn-add-cart btn-lg px-4 shadow-sm flex-grow-1">
+                            <i class="bi bi-cart-plus-fill me-2 fs-5 align-middle"></i> Thêm Vào Giỏ Mua
+                        </button>
+
+                        <a href="/HangHoa" class="btn btn-outline-back btn-lg px-4 flex-grow-1 text-center">
+                            <i class="bi bi-arrow-left me-2 align-middle"></i> Xem sản phẩm khác
+                        </a>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-top border-secondary">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="bi bi-shield-check trust-badge-icon d-block"></i>
+                                <span class="trust-badge-text">Chính hãng 100%</span>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-box-seam trust-badge-icon d-block"></i>
+                                <span class="trust-badge-text">Đóng gói cẩn thận</span>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-truck trust-badge-icon d-block"></i>
+                                <span class="trust-badge-text">Giao hàng siêu tốc</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,244 @@
+﻿@{
+    ViewData["Title"] = "Thanh toán - LittleHairSalon";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #000;
+    }
+
+    .success-wrap {
+        max-width: 950px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .success-box {
+        background: #111;
+        border: 1px solid #222;
+        border-radius: 1.5rem;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ffd700, #ffaa00);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 20px;
+    }
+
+    .payment-card {
+        background: #111;
+        border: 1px solid #222;
+        border-radius: 1.2rem;
+        padding: 20px;
+        transition: 0.3s;
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+        .payment-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-5px);
+        }
+
+        .payment-card.selected {
+            border-color: #ffd700;
+            background: #1a1a00;
+        }
+
+    .payment-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        margin-top: 10px;
+    }
+
+    .payment-desc {
+        color: #aaa;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    /* Vùng hiển thị QR */
+    .qr-container {
+        display: none;
+        margin-top: 30px;
+        animation: fadeIn 0.5s;
+    }
+
+    .qr-box {
+        background: #fff;
+        border-radius: 1rem;
+        padding: 16px;
+        display: inline-block;
+        margin: 10px auto;
+    }
+
+    .bank-info {
+        background: #0a0a0a;
+        border: 1px solid #222;
+        border-radius: 1rem;
+        padding: 20px;
+        text-align: left;
+        max-width: 500px;
+        margin: 16px auto;
+    }
+
+    .bank-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #1a1a1a;
+        font-size: 0.9rem;
+    }
+
+    .bank-value {
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .copy-btn {
+        background: #222;
+        color: #ffd700;
+        border: 1px solid #333;
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 0.7rem;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="success-wrap">
+    <div class="success-box">
+        <div class="success-icon">✅</div>
+        <h2 class="fw-bold mb-2" style="color:#ffd700;">Đặt Lịch Thành Công!</h2>
+        <p style="color:#ddd;">Cảm ơn bạn đã chọn <strong>LittleHairSalon</strong>. Vui lòng chọn phương thức thanh toán bên dưới.</p>
+    </div>
+
+    <h5 class="fw-bold mb-3 text-white">💳 Chọn phương thức thanh toán</h5>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="payment-card" onclick="window.location.href='/Payment/VnPayPayment'">
+                <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/6/0oxhzjmps39d1686480940772.png" width="50" alt="VNPAY">
+                <div class="payment-title">VNPAY-QR</div>
+                <div class="payment-desc">Tự động (Khuyên dùng)</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="payment-card" id="card-qr" onclick="chonThanhToan('qr', this)">
+                <div style="font-size:2rem;">🏦</div>
+                <div class="payment-title">MB Bank</div>
+                <div class="payment-desc">Quét mã chuyển khoản</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="payment-card" id="card-momo" onclick="chonThanhToan('momo', this)">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/MoMo_Logo.png/200px-MoMo_Logo.png" width="40" alt="MoMo">
+                <div class="payment-title">Ví MoMo</div>
+                <div class="payment-desc">Thanh toán qua app MoMo</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="payment-card" id="card-cash" onclick="chonThanhToan('cash', this)">
+                <div style="font-size:2rem;">💵</div>
+                <div class="payment-title">Tiền mặt</div>
+                <div class="payment-desc">Thanh toán tại quầy</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="box-qr" class="qr-container">
+        <div class="success-box">
+            <h5 class="fw-bold text-warning">🏦 Chuyển khoản MB Bank - LittleHairSalon</h5>
+            <div class="qr-box">
+                <img src="https://img.vietqr.io/image/MB-259221274705-compact2.jpg?amount=0&addInfo=LittleHairSalon%20Thanh%20Toan&accountName=VO%20NGUYEN%20HUYNH%20HUONG"
+                     width="220" alt="QR MB Bank">
+            </div>
+            <div class="bank-info">
+                <div class="bank-row"><span class="text-muted">Chủ TK:</span> <span class="bank-value">VO NGUYEN HUYNH HUONG</span></div>
+                <div class="bank-row">
+                    <span class="text-muted">Số TK:</span>
+                    <div><span class="bank-value" id="stk">259221274705</span> <button class="copy-btn" onclick="copyText('stk')">Copy</button></div>
+                </div>
+                <div class="bank-row">
+                    <span class="text-muted">Nội dung:</span>
+                    <div><span class="bank-value" id="nd">LittleHairSalon TT</span> <button class="copy-btn" onclick="copyText('nd')">Copy</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="box-momo" class="qr-container">
+        <div class="success-box">
+            <h5 class="fw-bold" style="color:#A50064;">📱 Thanh toán qua Ví MoMo</h5>
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=MoMo_LittleHairSalon_0792745xxx" width="200" alt="QR MoMo">
+            </div>
+            <p class="text-white mt-2">SĐT MoMo: <strong>0792 745 xxx</strong></p>
+            <p class="text-muted small">Vui lòng chụp màn hình sau khi thanh toán.</p>
+        </div>
+    </div>
+
+    <div id="box-cash" class="qr-container">
+        <div class="success-box">
+            <div style="font-size:3rem;">🏬</div>
+            <h5 class="fw-bold text-warning mt-3">Thanh toán tại quầy</h5>
+            <p class="text-muted">Bạn vui lòng thanh toán trực tiếp tại salon sau khi sử dụng dịch vụ.</p>
+            <p class="text-white small">📍 Địa chỉ: 123 Nguyễn Trãi, Q.1, TP.HCM</p>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 d-flex gap-3 justify-content-center">
+        <a href="/TrangChu" class="btn-outline-gold">🏠 Về trang chủ</a>
+        <a href="/DatLich" class="btn-gold">📅 Đặt lịch thêm</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function chonThanhToan(loai, el) {
+            // Xóa class selected cũ
+            document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
+            // Ẩn các box cũ
+            document.querySelectorAll('.qr-container').forEach(b => b.style.display = 'none');
+
+            // Hiển thị box mới
+            el.classList.add('selected');
+            document.getElementById('box-' + loai).style.display = 'block';
+            document.getElementById('box-' + loai).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyText(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text);
+            alert('Đã sao chép: ' + text);
+        }
+    </script>
+}

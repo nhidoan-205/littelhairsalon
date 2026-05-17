@@ -1,0 +1,74 @@
+﻿@model IEnumerable<LittleHairSalon.Models.LichDat>
+
+@{
+    ViewData["Title"] = "Quản lý Lịch Hẹn";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Quản Lý Lịch Hẹn</h1>
+    
+    <div class="card mb-4 shadow border-0">
+        <div class="card-header bg-dark text-white">
+            <i class="fas fa-calendar-alt me-1"></i> Danh sách khách hàng đặt chỗ
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã</th>
+                            <th>Khách Hàng</th>
+                            <th>Dịch Vụ</th>
+                            <th>Thời Gian</th>
+                            <th>Thợ Thực Hiện</th>
+                            <th>Trạng Thái</th>
+                            <th class="text-center">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>#@item.MaLichDat</td>
+                                <td>
+                                    <strong>@item.KhachHang?.HoTen</strong>
+                                </td>
+                                <td><span class="text-primary">@item.DichVu?.TenDichVu</span></td>
+                                <td>
+                                    <div><i class="far fa-calendar-alt"></i> @item.NgayDat?.ToString("dd/MM/yyyy")</div>
+                                    <small class="text-muted"><i class="far fa-clock"></i> @item.GioDat?.ToString(@"hh\:mm")</small>
+                                </td>
+                                <td>@(item.NhanVien?.TenNhanVien ?? "Chưa chỉ định")</td>
+                                <td>
+                                    @switch (item.TrangThai)
+                                    {
+                                        case 1: <span class="badge bg-success">Đã xác nhận</span> break;
+                                        case 2: <span class="badge bg-info">Hoàn thành</span> break;
+                                        case 3: <span class="badge bg-danger">Đã hủy</span> break;
+                                        default: <span class="badge bg-warning text-dark">Chờ duyệt</span> break;
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        @if (item.TrangThai == 0)
+                                        {
+                                            <a href="/Admin/LichDat/XacNhan/@item.MaLichDat"
+                                               class="btn btn-sm btn-success"
+                                               onclick="return confirm('Duyệt lịch này?')">Duyệt</a>
+                                            <a href="/Admin/LichDat/HuyLich/@item.MaLichDat"
+                                               class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Hủy lịch này?')">Hủy</a>
+                                        }
+                                        <a class="btn btn-sm btn-outline-secondary" href="/Admin/LichDat/ChiTiet/@item.MaLichDat">Xem</a>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

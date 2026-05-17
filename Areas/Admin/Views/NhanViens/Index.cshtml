@@ -1,0 +1,122 @@
+﻿@model IEnumerable<LittleHairSalon.Models.NhanVien>
+
+@{
+    ViewData["Title"] = "Quản lý Nhân Viên";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@* Thêm link Font Awesome dự phòng để đảm bảo hiện icon như trong image_03041b.png *@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    /* Đảm bảo các nút thao tác có kích thước bằng nhau */
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+</style>
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mt-4">Đội Ngũ Nhân Viên</h1>
+        <a asp-area="Admin" asp-controller="NhanViens" asp-action="Create" class="btn btn-primary mt-3 shadow-sm">
+            <i class="fas fa-plus-circle me-1"></i> Thêm nhân viên mới
+        </a>
+    </div>
+    
+    <div class="card mb-4 shadow border-0 mt-3">
+        <div class="card-header bg-dark text-white">
+            <i class="fas fa-users-cog me-1"></i> Danh sách nhân sự nội bộ
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 80px;">Ảnh</th>
+                            <th>Họ Tên</th>
+                            <th>Chức Vụ</th>
+                            <th>Kinh Nghiệm</th>
+                            <th style="width: 150px;">Trạng Thái</th>
+                            <th class="text-center" style="width: 180px;">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.AnhDaiDien))
+                                    {
+                                        <img src="~/images/nhanvien/@item.AnhDaiDien" alt="@item.TenNhanVien"
+                                             class="rounded-circle shadow-sm border" style="width: 50px; height: 50px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/default-avatar.png" class="rounded-circle shadow-sm border" style="width: 50px; height: 50px;" />
+                                    }
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">@item.TenNhanVien</div>
+                                    <div class="small text-muted">@item.Email</div>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">@item.ChucVu</span></td>
+                                <td>
+                                    <span class="text-truncate d-inline-block" style="max-width: 250px;" title="@item.KinhNghiem">
+                                        <small class="text-muted">@item.KinhNghiem</small>
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.TrangThai == 1)
+                                    {
+                                        <span class="badge bg-success bg-opacity-75"><i class="fas fa-check-circle me-1"></i>Đang làm việc</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary bg-opacity-75"><i class="fas fa-pause-circle me-1"></i>Tạm nghỉ</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <!-- Thay đổi trạng thái -->
+                                        <form asp-area="Admin" asp-controller="NhanViens" asp-action="ThayDoiTrangThai" asp-route-id="@item.MaNhanVien" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-action @(item.TrangThai == 1 ? "btn-outline-warning" : "btn-outline-success")"
+                                                    title="@(item.TrangThai == 1 ? "Chuyển sang Tạm nghỉ" : "Kích hoạt làm việc")">
+                                                <i class="fas @(item.TrangThai == 1 ? "fa-eye-slash" : "fa-eye")"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Nút Sửa -->
+                                        <a class="btn btn-action btn-outline-primary" asp-area="Admin" asp-controller="NhanViens" asp-action="Edit" asp-route-id="@item.MaNhanVien" title="Chỉnh sửa thông tin">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <!-- Nút Xóa -->
+                                        <form asp-area="Admin" asp-controller="NhanViens" asp-action="Delete" asp-route-id="@item.MaNhanVien" method="post"
+                                              onsubmit="return confirm('Hành động này không thể hoàn tác! Bạn có chắc chắn muốn xóa nhân viên @item.TenNhanVien?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-action btn-outline-danger" title="Xóa nhân viên">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

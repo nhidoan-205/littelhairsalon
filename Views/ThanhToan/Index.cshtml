@@ -1,0 +1,261 @@
+﻿@using Microsoft.AspNetCore.Http
+@using System.Text.Json
+@using LittleHairSalon.Models
+
+@{
+    ViewData["Title"] = "Thanh Toán - LittleHairSalon";
+
+    decimal tongTienHang = ViewBag.TongTienHang != null ? (decimal)ViewBag.TongTienHang : 0;
+    decimal phiShip = ViewBag.PhiShip != null ? (decimal)ViewBag.PhiShip : 30000;
+    decimal tongThanhToan = ViewBag.TongThanhToan != null ? (decimal)ViewBag.TongThanhToan : (tongTienHang + phiShip);
+
+    var khach = ViewBag.KhachHang as KhachHang;
+}
+
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .shopee-border-top {
+        height: 3px;
+        background-image: repeating-linear-gradient(45deg, #6fa6d6, #6fa6d6 33px, transparent 0, transparent 41px, #f18d9b 0, #f18d9b 74px, transparent 0, transparent 82px);
+        background-position-x: -30px;
+        background-size: 116px 3px;
+    }
+
+    .section-payment {
+        background: #fff;
+        box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+        border-radius: 3px;
+        margin-bottom: 20px;
+        padding: 25px 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .payment-method-btn {
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        color: #000;
+        padding: 10px 15px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        cursor: pointer !important;
+        position: relative;
+        z-index: 10;
+        font-weight: 500;
+        min-width: 180px;
+        text-align: center;
+        border-radius: 2px;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: all !important;
+    }
+
+        .payment-method-btn:hover {
+            border-color: #ee4d2d;
+            color: #ee4d2d;
+        }
+
+        .payment-method-btn.active {
+            border-color: #ee4d2d;
+            color: #ee4d2d;
+        }
+
+            .payment-method-btn.active::before {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                border-bottom: 15px solid #ee4d2d;
+                border-left: 15px solid transparent;
+            }
+
+            .payment-method-btn.active::after {
+                content: "✓";
+                position: absolute;
+                bottom: -2px;
+                right: 0px;
+                color: #fff;
+                font-size: 10px;
+                font-weight: bold;
+            }
+
+    .btn-dat-hang {
+        background-color: #ee4d2d;
+        color: #fff;
+        border-radius: 2px;
+        width: 250px;
+        height: 45px;
+        font-size: 16px;
+        border: none;
+        box-shadow: 0 1px 1px rgba(0,0,0,.09);
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+    }
+
+        .btn-dat-hang:hover {
+            background-color: #d73211;
+            color: white;
+        }
+
+    .price-text {
+        color: #ee4d2d;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .label-header {
+        font-size: 18px;
+        color: #ee4d2d;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<form asp-action="DatHang" asp-controller="ThanhToan" method="post" id="form-thanh-toan">
+
+    <!-- Địa chỉ nhận hàng -->
+    <div class="container bg-white mt-4 pt-4 pb-4 position-relative shadow-sm rounded-bottom">
+        <div class="shopee-border-top position-absolute top-0 start-0 w-100"></div>
+        <div class="label-header mb-4"><i class="bi bi-geo-alt-fill me-2"></i> Địa Chỉ Nhận Hàng</div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Họ và tên</label>
+                <input type="text" name="hoTen" class="form-control" required placeholder="Nhập họ tên..." value="@(khach?.HoTen)">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Số điện thoại</label>
+                <input type="text" name="sdt" class="form-control" required placeholder="(+84) ..." value="@(khach?.DienThoai)">
+            </div>
+            <div class="col-md-12">
+                <label class="form-label fw-bold small text-muted">Địa chỉ chi tiết</label>
+                <input type="text" name="diaChi" class="form-control" required placeholder="Địa chỉ giao hàng..." value="@(khach?.DiaChi)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <div class="container section-payment mt-3">
+        <table class="table table-borderless align-middle mb-0">
+            <thead class="border-bottom">
+                <tr class="text-muted small">
+                    <th style="width: 50%">Sản phẩm</th>
+                    <th class="text-center">Đơn giá</th>
+                    <th class="text-center">Số lượng</th>
+                    <th class="text-end">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var session = Context.Session;
+                    string jsoncart = session.GetString("GioHang");
+                    var gioHang = new List<GioHangItem>();
+                    if (!string.IsNullOrEmpty(jsoncart))
+                    {
+                        gioHang = JsonSerializer.Deserialize<List<GioHangItem>>(jsoncart);
+                    }
+                }
+                @foreach (var item in gioHang)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="@item.HinhAnh" width="50" class="me-3 border rounded">
+                                <span class="fw-semibold">@item.TenHang</span>
+                            </div>
+                        </td>
+                        <td class="text-center text-muted">@item.DonGia.ToString("#,##0")₫</td>
+                        <td class="text-center text-muted">@item.SoLuong</td>
+                        <td class="text-end fw-bold">@item.ThanhTien.ToString("#,##0")₫</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phương thức thanh toán -->
+    <div class="container section-payment">
+        <div class="row">
+            <div class="col-md-3">
+                <h6 class="fw-bold">Phương thức thanh toán</h6>
+            </div>
+            <div class="col-md-9">
+                <div class="d-flex flex-wrap">
+                    <button type="button" class="payment-method-btn active" onclick="chonPhuongThuc(this, 'COD')">
+                        Thanh toán khi nhận hàng
+                    </button>
+
+                    <button type="button" class="payment-method-btn" onclick="chonPhuongThuc(this, 'NGANHANG')">
+                        Chuyển khoản Ngân hàng
+                    </button>
+
+                    <button type="button" class="payment-method-btn" onclick="chonPhuongThuc(this, 'VNPAY')">
+                        Ví điện tử VNPAY
+                        <img src="https://vnpay.vn/assets/images/logo-icon/logo-primary.svg" height="15" class="ms-1" onerror="this.style.display='none'">
+                    </button>
+
+                    <button type="button" class="payment-method-btn" onclick="chonPhuongThuc(this, 'MOMO')">
+                        💜 Ví MoMo
+                    </button>
+                </div>
+
+                <input type="hidden" name="loaiThanhToan" id="input-loai-thanh-toan" value="COD">
+
+                <div id="payment-desc" class="mt-3 bg-light p-3 rounded text-muted small border">
+                    Thanh toán bằng tiền mặt khi nhận hàng. Phí thu hộ: 0₫.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tổng tiền -->
+    <div class="container section-payment bg-light border-top sticky-bottom">
+        <div class="row justify-content-end text-end align-items-center">
+            <div class="col-md-5">
+                <div class="d-flex justify-content-between mb-2 text-muted">
+                    <span>Tổng tiền hàng:</span>
+                    <span>@tongTienHang.ToString("#,##0")₫</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 text-muted">
+                    <span>Phí vận chuyển:</span>
+                    <span>@phiShip.ToString("#,##0")₫</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                    <span class="text-muted">Tổng thanh toán:</span>
+                    <span class="price-text">@tongThanhToan.ToString("#,##0")₫</span>
+                </div>
+                <div class="mt-4">
+                    <p class="small text-muted mb-3 fst-italic">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo điều khoản của LittleHairSalon.</p>
+                    <button type="submit" class="btn btn-dat-hang">ĐẶT HÀNG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    function chonPhuongThuc(element, maPhuongThuc) {
+        document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('input-loai-thanh-toan').value = maPhuongThuc;
+
+        const descDiv = document.getElementById('payment-desc');
+        if (maPhuongThuc === 'COD') {
+            descDiv.innerHTML = "Thanh toán bằng tiền mặt khi nhận hàng. Phí thu hộ: 0₫.";
+        } else if (maPhuongThuc === 'NGANHANG') {
+            descDiv.innerHTML = "<span class='text-primary fw-bold'>Thông báo:</span> Sau khi bấm Đặt Hàng, bạn sẽ nhận được thông tin số tài khoản và mã QR MB Bank của salon.";
+        } else if (maPhuongThuc === 'VNPAY') {
+            descDiv.innerHTML = "<span class='text-danger fw-bold'>Lưu ý:</span> Bạn sẽ được chuyển sang cổng VNPAY để quét mã QR tự động.";
+        } else if (maPhuongThuc === 'MOMO') {
+            descDiv.innerHTML = "<span class='fw-bold' style='color:#ae2070;'>MoMo:</span> Sau khi đặt hàng, bạn sẽ nhận được mã QR MoMo để thanh toán.";
+        }
+    }
+</script>

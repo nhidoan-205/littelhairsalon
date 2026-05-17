@@ -1,0 +1,276 @@
+﻿@model IEnumerable<LittleHairSalon.Models.DichVu>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Dịch Vụ";
+    // Ép kiểu dữ liệu động nhận từ file Excel thông qua Controller gửi qua
+    var danhSachDichVuExcel = ViewBag.DanhSachDichVu as List<LittleHairSalon.Models.DichVu>;
+    var danhSachSanPhamExcel = ViewBag.DanhSachSanPham as List<LittleHairSalon.Models.Hang>;
+}
+
+<style>
+    .dv-card {
+        background-color: #111;
+        border: 1px solid #222;
+        border-radius: 1.2rem;
+        overflow: hidden;
+        transition: 0.3s;
+    }
+
+        .dv-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.1);
+        }
+
+        .dv-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .dv-card:hover img {
+            transform: scale(1.05);
+        }
+
+    .badge-bestseller {
+        background-color: #ffd700;
+        color: #000;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 4px 12px;
+        border-radius: 50px;
+    }
+
+    .btn-datlich {
+        background-color: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 28px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.2s;
+        display: inline-block;
+    }
+
+        .btn-datlich:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+    .uudai-card {
+        background: linear-gradient(135deg, #1a1a00, #2a2000);
+        border: 1px solid #ffd700;
+        border-radius: 1.2rem;
+        padding: 2rem;
+        transition: 0.3s;
+    }
+
+        .uudai-card:hover {
+            box-shadow: 0 0 20px rgba(255,215,0,0.2);
+        }
+
+    .sp-card {
+        background-color: #111;
+        border: 1px solid #222;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: 0.3s;
+    }
+
+        .sp-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-3px);
+        }
+
+        .sp-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .section-label {
+        color: #ffd700;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+
+<div style="background: linear-gradient(180deg, #0a0a00 0%, #000 100%); padding: 60px 0 40px;">
+    <div class="container text-center">
+        <span class="section-label">✂️ LittleHairSalon</span>
+        <h1 class="fw-bold mt-2 mb-3" style="font-size: 2.8rem; color: #fff;">
+            Dịch Vụ & Ưu Đãi
+        </h1>
+        <p style="color: #aaa; max-width: 600px; margin: 0 auto;">
+            Trải nghiệm dịch vụ làm tóc chuyên nghiệp cùng các ưu đãi hấp dẫn dành riêng cho thành viên.
+        </p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div>
+            <span class="section-label">🔥 Được đặt nhiều nhất</span>
+            <h2 class="section-title mt-1">Dịch Vụ Bestseller</h2>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @if (danhSachDichVuExcel != null && danhSachDichVuExcel.Any())
+        {
+            int rank = 1;
+            // Lấy tối đa 3 dịch vụ đầu tiên làm nổi bật Bestseller
+            @foreach (var item in danhSachDichVuExcel.Take(3))
+            {
+                <div class="col-md-4">
+                    <div class="dv-card h-100">
+                        <div style="position: relative;">
+                            <img src="@Url.Content("~/" + item.AnhDichVu)" alt="@item.TenDichVu" onerror="this.style.opacity='0.2'">
+                            <span class="badge-bestseller" style="position: absolute; top: 12px; left: 12px;">⭐ Bestseller #@rank</span>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="fw-bold mb-1" style="color: #ffd700;">@item.TenDichVu</h5>
+                            <p class="small mb-3" style="color: #aaa; min-height: 45px;">@item.MoTa</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold" style="color: #ffd700; font-size: 1.2rem;">@(item.Gia.ToString("#,##0") ?? "0") ₫</span>
+                                <a href="/DatLich" class="btn-datlich">Đặt lịch</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                rank++;
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-4">
+                <p class="text-white-50">Không có dữ liệu dịch vụ từ hệ thống dự phòng.</p>
+            </div>
+        }
+    </div>
+
+    @if (danhSachDichVuExcel != null && danhSachDichVuExcel.Any())
+    {
+        <div class="d-flex align-items-center gap-3 mb-4 mt-5">
+            <div>
+                <span class="section-label">📋 Bảng giá đầy đủ</span>
+                <h2 class="section-title mt-1">Tất Cả Dịch Vụ</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var item in danhSachDichVuExcel)
+            {
+                <div class="col-md-4">
+                    <div class="dv-card h-100">
+                        <img src="@Url.Content("~/" + item.AnhDichVu)" alt="@item.TenDichVu" onerror="this.style.opacity='0.2'">
+                        <div class="p-4">
+                            <h5 class="fw-bold mb-1" style="color: #ffd700;">@item.TenDichVu</h5>
+                            <p class="small mb-3" style="color: #aaa; min-height: 45px;">@item.MoTa</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold" style="color: #ffd700; font-size: 1.2rem;">
+                                    @(item.Gia.ToString("#,##0") ?? "0") ₫
+                                </span>
+                                <a href="/DatLich" class="btn-datlich">Đặt lịch</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div style="background-color: #0a0a0a;" class="py-5 mt-3">
+    <div class="container">
+        <div class="mb-4">
+            <span class="section-label">🎁 Dành riêng cho thành viên</span>
+            <h2 class="section-title mt-1">Ưu Đãi Hấp Dẫn</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="uudai-card h-100">
+                    <div style="font-size: 2.5rem;">✂️</div>
+                    <h5 class="fw-bold mt-3 mb-2" style="color: #ffd700;">Giảm 10% lần đầu</h5>
+                    <p style="color: #aaa; font-size: 0.9rem;">Khách hàng mới đăng ký tài khoản và đặt lịch lần đầu được giảm ngay 10% toàn bộ dịch vụ.</p>
+                    <span style="color: #555; font-size: 0.8rem;">Áp dụng đến 31/12/2026</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="uudai-card h-100">
+                    <div style="font-size: 2.5rem;">🎂</div>
+                    <h5 class="fw-bold mt-3 mb-2" style="color: #ffd700;">Sinh nhật miễn phí gội đầu</h5>
+                    <p style="color: #aaa; font-size: 0.9rem;">Thành viên được tặng 1 lần gội đầu dưỡng sinh miễn phí trong tháng sinh nhật. Không giới hạn.</p>
+                    <span style="color: #555; font-size: 0.8rem;">Dành cho thành viên đã đăng ký</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="uudai-card h-100">
+                    <div style="font-size: 2.5rem;">👥</div>
+                    <h5 class="fw-bold mt-3 mb-2" style="color: #ffd700;">Giới thiệu bạn bè</h5>
+                    <p style="color: #aaa; font-size: 0.9rem;">Giới thiệu 1 người dùng mới, cả hai cùng được giảm 50.000₫ cho lần dịch vụ tiếp theo.</p>
+                    <span style="color: #555; font-size: 0.8rem;">Không giới hạn số lượt giới thiệu</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="mb-4">
+        <span class="section-label">🛍️ Dùng sau khi làm tóc</span>
+        <h2 class="section-title mt-1">Sản Phẩm Gợi Ý</h2>
+    </div>
+
+    <div class="row g-4">
+        @if (danhSachSanPhamExcel != null && danhSachSanPhamExcel.Any())
+        {
+            @foreach (var pro in danhSachSanPhamExcel)
+            {
+                <div class="col-6 col-md-3">
+                    <a href="/HangHoa/DauGoi" class="text-decoration-none">
+                        <div class="sp-card">
+                            <img src="@Url.Content("~/" + pro.HinhAnh)" alt="@pro.TenHang" onerror="this.style.opacity='0.2'">
+                            <div class="p-3">
+                                <p class="fw-bold mb-0 text-truncate" style="color: #fff; font-size: 0.9rem;">@pro.TenHang</p>
+                                <p style="color: #ffd700; font-size: 0.85rem;">Từ @(pro.Gia?.ToString("#,##0") ?? "0") ₫</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-3">
+                <p class="text-white-50 small">Không có sản phẩm gợi ý phù hợp từ tệp Excel.</p>
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/HangHoa/TatCa" class="btn-datlich px-5 py-3" style="font-size: 1rem;">
+            🛒 Xem tất cả sản phẩm
+        </a>
+    </div>
+</div>
+
+<style>
+    .card-hover:hover {
+        transform: translateY(-10px) !important;
+        border-color: #ffcc00 !important;
+        box-shadow: 0 10px 20px rgba(255, 204, 0, 0.2) !important;
+    }
+</style>

@@ -1,0 +1,45 @@
+﻿@model LittleHairSalon.Models.DonHang
+@{
+    ViewData["Title"] = "Chi Tiết Đơn Hàng";
+}
+
+<div class="container mt-5">
+    <h2 class="text-success fw-bold">Chi tiết đơn hàng #@Model.MaDon</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Người nhận:</strong> @Model.NguoiNhan</p>
+            <p><strong>Địa chỉ:</strong> @Model.DiaChi</p>
+            <p><strong>Số điện thoại:</strong> @Model.Sdt</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <p><strong>Ngày đặt:</strong> @Model.NgayDat?.ToString("dd/MM/yyyy")</p>
+            <p><strong>Trạng thái:</strong> <span class="badge bg-primary">@Model.TrangThai</span></p>
+        </div>
+    </div>
+
+    <table class="table mt-4">
+        <thead class="table-light">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ct in Model.ChiTietDons)
+            {
+                <tr>
+                    @* Dùng MaHangNavigation để lấy tên hàng *@
+                    <td>@ct.MaHangNavigation?.TenHang</td>
+                    <td>@ct.SoLuong</td>
+                    <td>@ct.DonGia?.ToString("#,##0") đ</td>
+                    <td>@((ct.SoLuong * ct.DonGia)?.ToString("#,##0")) đ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h4 class="text-end text-danger fw-bold">Tổng cộng: @Model.TongTien?.ToString("#,##0") đ</h4>
+    <a href="/KhachHang/DonHangCuaToi" class="btn btn-secondary">Quay lại</a>
+</div>

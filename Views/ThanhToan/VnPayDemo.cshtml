@@ -1,0 +1,180 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cổng thanh toán VNPAY - LittleHairSalon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            background-color: #F0F5F9; 
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-card {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 91, 170, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .info-side {
+            background: linear-gradient(135deg, #005BAA 0%, #003E75 100%);
+            color: white;
+            padding: 40px;
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        .qr-side {
+            padding: 50px;
+            flex: 1.2;
+            text-center;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-frame {
+            border: 2px solid #005BAA;
+            border-radius: 16px;
+            padding: 15px;
+            display: inline-block;
+            background: white;
+            margin: 20px 0;
+            position: relative;
+        }
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: red;
+            top: 0;
+            left: 0;
+            animation: scan 2s infinite linear;
+            opacity: 0.6;
+            box-shadow: 0 0 10px red;
+        }
+
+        @@keyframes scan {
+            0% {
+                top: 0%;
+            }
+
+            50% {
+                top: 100%;
+            }
+
+            100% {
+                top: 0%;
+            }
+        }
+
+        .btn-confirm {
+            background-color: #005BAA;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            transition: 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+            .btn-confirm:hover {
+                background-color: #004480;
+                color: white;
+            }
+
+        .bill-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FFD700; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-card">
+        <div class="info-side">
+            <h3 class="fw-bold fst-italic mb-4">VNPAY<sup style="font-size: 14px">QR</sup></h3>
+
+            <div class="mb-4">
+                <small class="opacity-75">Đơn vị thụ hưởng</small>
+                <div class="fs-5 fw-bold">CÔNG TY LITTLE HAIR SALON</div>
+            </div>
+
+            <div class="mb-4">
+                <small class="opacity-75">Mã đơn hàng</small>
+                <div class="fs-4 font-monospace">#@ViewBag.MaDon</div>
+            </div>
+
+            <div class="mb-5">
+                <small class="opacity-75">Số tiền thanh toán</small>
+                <div class="bill-amount">@ViewBag.SoTien.ToString("#,##0") đ</div>
+            </div>
+
+            <div style="position: absolute; bottom: 40px; font-size: 0.85rem; opacity: 0.7;">
+                <i class="bi bi-shield-check"></i> Giao dịch được bảo mật bởi VNPAY.
+            </div>
+        </div>
+
+        <div class="qr-side">
+            <h5 class="fw-bold mb-2">Mở App Ngân hàng để quét mã</h5>
+            <p class="text-muted small">Vietcombank, BIDV, Techcombank, MBBank...</p>
+
+            <div class="qr-frame">
+                <img src="https://quickchart.io/qr?text=ThanhToan_DonHang_@ViewBag.MaDon&size=200&dark=005BAA"
+                     alt="QR Code" width="200" height="200">
+                <div class="scan-line"></div>
+            </div>
+
+            <div class="text-danger fw-bold mb-4" id="countdown">
+                Hết hạn sau: 10:00
+            </div>
+
+            <div class="w-100">
+                <p class="small text-muted mb-2">* Đây là giao diện giả lập (Demo)</p>
+                <div class="d-flex gap-2">
+                    <a href="/ThanhToan/XuLyVnPay?maDon=@ViewBag.MaDon&thanhCong=true" class="btn btn-confirm">
+                        <i class="bi bi-check-lg"></i> Xác nhận thanh toán
+                    </a>
+                    <a href="/ThanhToan/XuLyVnPay?maDon=@ViewBag.MaDon&thanhCong=false" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center" style="border-radius: 12px;">
+                        Hủy
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 600; // 10 phút
+        setInterval(() => {
+            if(timeLeft <= 0) return;
+            timeLeft--;
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            document.getElementById("countdown").innerText =
+                `Hết hạn sau: ${m}:${s < 10 ? '0' : ''}${s}`;
+        }, 1000);
+    </script>
+</body>
+</html>

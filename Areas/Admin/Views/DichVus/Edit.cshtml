@@ -1,0 +1,67 @@
+﻿@model LittleHairSalon.Models.DichVu
+@{
+    ViewData["Title"] = "Cập Nhật Dịch Vụ";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container p-4" style="background-color: #1a1a1a; color: white; border-radius: 15px; max-width: 700px;">
+    <h3 style="color: #ffcc00;"><i class="bi bi-pencil-square me-2"></i>CẬP NHẬT THÔNG TIN DỊCH VỤ</h3>
+    <hr class="border-secondary" />
+
+    @* QUAN TRỌNG: Phải có method="post" để gửi dữ liệu về Controller *@
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+
+        @* Hiển thị tất cả lỗi nếu dữ liệu không hợp lệ *@
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        @* QUAN TRỌNG: Phải giữ ID để Controller biết đang sửa bản ghi nào *@
+        <input type="hidden" asp-for="MaDichVu" />
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Tên dịch vụ</label>
+            <input asp-for="TenDichVu" class="form-control bg-dark text-white border-secondary" placeholder="Nhập tên dịch vụ..." />
+            <span asp-validation-for="TenDichVu" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Giá tiền (VNĐ)</label>
+                <input asp-for="Gia" type="number" class="form-control bg-dark text-white border-secondary" />
+                <span asp-validation-for="Gia" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Thời gian (phút)</label>
+                <input asp-for="ThoiGianUocTinh" type="number" class="form-control bg-dark text-white border-secondary" />
+                <span asp-validation-for="ThoiGianUocTinh" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Link hình ảnh</label>
+            <input asp-for="AnhDichVu" class="form-control bg-dark text-white border-secondary" placeholder="Dán link ảnh từ web..." />
+            <span asp-validation-for="AnhDichVu" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Mô tả dịch vụ</label>
+            <textarea asp-for="MoTa" rows="4" class="form-control bg-dark text-white border-secondary" placeholder="Mô tả chi tiết về dịch vụ..."></textarea>
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-warning fw-bold px-4">
+                <i class="bi bi-save me-1"></i> LƯU THAY ĐỔI
+            </button>
+            <a asp-action="Index" class="btn btn-outline-light ms-2">
+                <i class="bi bi-x-circle me-1"></i> HỦY BỎ
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

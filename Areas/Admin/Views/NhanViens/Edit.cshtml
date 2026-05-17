@@ -1,0 +1,112 @@
+﻿@model LittleHairSalon.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Chỉnh sửa nhân viên";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sửa Thông Tin</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index">Quản lý nhân viên</a></li>
+        <li class="breadcrumb-item active">Chỉnh sửa</li>
+    </ol>
+
+    <div class="card mb-4 shadow border-0">
+        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-user-edit me-1"></i> Cập nhật nhân sự: <strong>@Model.TenNhanVien</strong></span>
+            
+            @* Form xóa tách biệt hoàn toàn để tránh lồng thẻ form *@
+            <form asp-action="Delete" asp-route-id="@Model.MaNhanVien" method="post"
+                  onsubmit="return confirm('Cảnh báo: Hành động này không thể hoàn tác! Xóa nhân viên này?');">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash-alt"></i> Xóa nhân viên
+                </button>
+            </form>
+        </div>
+        
+        <div class="card-body">
+            @* Form cập nhật chính *@
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                
+                <input type="hidden" asp-for="MaNhanVien" />
+                <input type="hidden" asp-for="AnhDaiDien" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <!-- Cột trái: Ảnh hiện tại -->
+                    <div class="col-md-4 text-center border-end">
+                        <label class="form-label d-block font-weight-bold">Ảnh hiện tại</label>
+                        <div class="mb-3">
+                            @if (!string.IsNullOrEmpty(Model.AnhDaiDien))
+                            {
+                                <img src="~/images/nhanvien/@Model.AnhDaiDien" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default-user.png" class="rounded-circle shadow" style="width: 150px;" />
+                            }
+                        </div>
+                        <div class="mb-3 px-3">
+                            <input type="file" name="fAnh" class="form-control form-control-sm" accept="image/*" />
+                            <small class="text-muted">Chọn ảnh mới nếu muốn thay đổi</small>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải: Thông tin chi tiết -->
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TenNhanVien" class="form-label font-weight-bold">Họ Tên</label>
+                                <input asp-for="TenNhanVien" class="form-control" />
+                                <span asp-validation-for="TenNhanVien" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label font-weight-bold">Email</label>
+                                <input asp-for="Email" class="form-control" type="email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ChucVu" class="form-label font-weight-bold">Chức vụ</label>
+                                <input asp-for="ChucVu" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TrangThai" class="form-label font-weight-bold">Trạng thái</label>
+                                <select asp-for="TrangThai" class="form-select">
+                                    <option value="1">Đang làm việc</option>
+                                    <option value="0">Tạm nghỉ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="KinhNghiem" class="form-label font-weight-bold">Kinh nghiệm</label>
+                            <textarea asp-for="KinhNghiem" class="form-control" rows="4"></textarea>
+                        </div>
+
+                        <div class="mt-4 border-top pt-3">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-1"></i> Lưu thay đổi
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary px-4">
+                                <i class="fas fa-arrow-left me-1"></i> Quay lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

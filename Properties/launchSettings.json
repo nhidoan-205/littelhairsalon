@@ -1,0 +1,25 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "TrangChu",
+      "applicationUrl": "http://0.0.0.0:5110",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "TrangChu",
+      "applicationUrl": "https://0.0.0.0:7208;http://0.0.0.0:5110",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

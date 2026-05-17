@@ -1,0 +1,291 @@
+﻿@{
+    ViewData["Title"] = "Lien He - LittleHairSalon";
+}
+
+<style>
+    body {
+        background-color: #000;
+        color: #fff;
+    }
+
+    .page-hero {
+        background: linear-gradient(180deg, #0a0a00 0%, #000 100%);
+        padding: 60px 0 40px;
+        text-align: center;
+        border-bottom: 1px solid #222;
+    }
+
+    .info-card {
+        background: #111;
+        border: 1px solid #222;
+        border-radius: 1.2rem;
+        padding: 28px;
+        height: 100%;
+        transition: 0.3s;
+    }
+
+        .info-card:hover {
+            border-color: #ffd700;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.08);
+        }
+
+    .icon-wrap {
+        width: 52px;
+        height: 52px;
+        background: rgba(255,215,0,0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        margin-bottom: 16px;
+        transition: 0.3s;
+    }
+
+    .info-card:hover .icon-wrap {
+        background: #ffd700;
+    }
+
+    .info-label {
+        color: #aaa;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+
+    .info-value {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+        .info-value a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+            .info-value a:hover {
+                text-decoration: underline;
+            }
+
+    .map-wrap {
+        border-radius: 1.2rem;
+        overflow: hidden;
+        border: 1px solid #222;
+        height: 420px;
+    }
+
+        .map-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+    .btn-gold {
+        background: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 28px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+        font-size: 0.95rem;
+    }
+
+        .btn-gold:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+    .hours-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #1a1a1a;
+        font-size: 0.9rem;
+    }
+
+        .hours-row:last-child {
+            border-bottom: none;
+        }
+
+    .hours-day {
+        color: #aaa;
+    }
+
+    .hours-time {
+        color: #ffd700;
+        font-weight: 700;
+    }
+
+    .hours-open {
+        color: #22c55e;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .social-link {
+        color: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #222;
+        transition: 0.2s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        .social-link:hover {
+            border-color: #ffd700;
+            color: #fff;
+        }
+</style>
+
+<div class="page-hero">
+    <div class="container">
+        <span style="color:#ffd700; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+            Tìm chúng tôi
+        </span>
+        <h1 class="fw-bold mt-2 mb-2" style="font-size: 2.8rem;">LittleHair Salon</h1>
+        <p style="color:#aaa; max-width:500px; margin:0 auto;">
+            Đội ngũ của chúng tôi luôn sẵn sàng hỗ trợ bạn 7 ngày trong tuần.
+        </p>
+    </div>
+</div>
+
+<div class="container py-5">
+
+    <div class="row g-4 mb-5">
+        <div class="col-6 col-md-3">
+            <div class="info-card">
+                <div class="icon-wrap">&#128205;</div>
+                <div class="info-label">Địa chỉ</div>
+                <div class="info-value">123 Nguyen Trai,<br />Q.1, TP.HCM</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="info-card">
+                <div class="icon-wrap">&#128222;</div>
+                <div class="info-label">Hotline</div>
+                <div class="info-value">
+                    <a href="tel:19008682">1900 8682</a><br />
+                    <span style="color:#aaa; font-size:0.8rem;">Ho tro 24/7</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="info-card">
+                <div class="icon-wrap">&#9993;</div>
+                <div class="info-label">Email</div>
+                <div class="info-value">
+                    <a href="mailto:hello@littlehairsalon.vn">xinchaotuiminhla@littlehairsalon.vn</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="info-card">
+                <div class="icon-wrap">&#128336;</div>
+                <div class="info-label">Giờ mở cửa</div>
+                <div class="info-value">
+                    Thu 2 - Chu Nhat<br />
+                    <span style="color:#ffd700;">09:00 - 22:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5 align-items-start">
+
+        <div class="col-lg-7">
+            <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h4 class="fw-bold mb-0">Vị trí cửa hàng</h4>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=123+Nguyen+Trai+Ho+Chi+Minh"
+                   target="_blank" class="btn-gold">
+                    Chỉ đường đến Shop
+                </a>
+            </div>
+            <div class="map-wrap">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.446!2d106.6896!3d10.7751!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f1b7c3a7a07%3A0x0!2sNguy%E1%BB%85n%20Tr%C3%A3i%2C%20Qu%E1%BA%ADn%201%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh!5e0!3m2!1svi!2svn!4v1680000000000"
+                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+
+            <div class="info-card mb-4">
+                <h5 class="fw-bold mb-4" style="color:#ffd700;">Giờ mở cửa</h5>
+                <div class="hours-row">
+                    <span class="hours-day">Thu 2 - Thu 6</span>
+                    <span>
+                        <span class="hours-time">09:00 - 22:00</span>
+                        <span class="hours-open ms-2">Mo cua</span>
+                    </span>
+                </div>
+                <div class="hours-row">
+                    <span class="hours-day">Thu 7</span>
+                    <span>
+                        <span class="hours-time">08:00 - 22:00</span>
+                        <span class="hours-open ms-2">Mo cua</span>
+                    </span>
+                </div>
+                <div class="hours-row">
+                    <span class="hours-day">Chu Nhat</span>
+                    <span>
+                        <span class="hours-time">09:00 - 22:00</span>
+                        <span class="hours-open ms-2">Mo cua</span>
+                    </span>
+                </div>
+                <div class="mt-4 p-3 rounded-3" style="background:#0a0a0a; border:1px solid #1a1a1a;">
+                    <p class="mb-0" style="color:#aaa; font-size:0.85rem;">
+                        Ưu đãi khi đặt lịch trước <strong style="color:#ffd700;">giảm 15%</strong>!
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h5 class="fw-bold mb-4" style="color:#ffd700;">Có thể liên hệ qua các trang</h5>
+                <div class="d-flex flex-column gap-3">
+                    <a href="https://facebook.com/littlehairsalon" target="_blank" class="social-link">
+                        <span style="font-size:1.5rem; color:#1877F2;"><i class="fa-brands fa-facebook"></i></span>
+                        <div>
+                            <div style="font-weight:700;">Facebook</div>
+                            <div style="color:#aaa; font-size:0.8rem;">@@LittleHairSalon</div>
+                        </div>
+                        <span style="margin-left:auto; color:#aaa;">&#8594;</span>
+                    </a>
+                    <a href="https://instagram.com/littlehairsalon" target="_blank" class="social-link">
+                        <span style="font-size:1.5rem; background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); -webkit-background-clip:text; -webkit-text-fill-color:transparent;"><i class="fa-brands fa-instagram"></i></span>
+                        <div>
+                            <div style="font-weight:700;">Instagram</div>
+                            <div style="color:#aaa; font-size:0.8rem;">@@LittleHairSalon</div>
+                        </div>
+                        <span style="margin-left:auto; color:#aaa;">&#8594;</span>
+                    </a>
+                    <a href="https://tiktok.com/@@littlehairsalon" target="_blank" class="social-link">
+                        <span style="font-size:1.5rem; color:#fff;"><i class="fa-brands fa-tiktok"></i></span>
+                        <div>
+                            <div style="font-weight:700;">TikTok</div>
+                            <div style="color:#aaa; font-size:0.8rem;">@@LittleHairSalon</div>
+                        </div>
+                        <span style="margin-left:auto; color:#aaa;">&#8594;</span>
+                    </a>
+                </div>
+                <div class="mt-4">
+                    <a href="/DatLich" class="btn-gold w-100 justify-content-center">
+                        Đặt lịch ngay hôm nay nhé moah ><
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

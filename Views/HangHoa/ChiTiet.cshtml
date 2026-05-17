@@ -1,0 +1,142 @@
+@model LittleHairSalon.Models.Hang
+@{
+    ViewData["Title"] = Model.TenHang;
+}
+
+<style>
+    .chi-tiet-img {
+        border-radius: 1.5rem;
+        overflow: hidden;
+        border: 2px solid #333;
+        aspect-ratio: 3/4;
+    }
+
+        .chi-tiet-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .badge-loai {
+        background-color: rgba(255,215,0,0.15);
+        color: #ffd700;
+        border-radius: 50px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .btn-them-gio {
+        background-color: #ffd700;
+        color: #000;
+        border: none;
+        border-radius: 50px;
+        padding: 14px 40px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: 0.2s;
+    }
+
+        .btn-them-gio:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+    .btn-quay-lai {
+        background: transparent;
+        border: 1px solid #333;
+        color: #aaa;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .btn-quay-lai:hover {
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+    .info-box {
+        background-color: #111;
+        border: 1px solid #222;
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+</style>
+
+<div class="container py-5 mt-4">
+    <!-- Breadcrumb -->
+    <nav class="mb-4">
+        <a href="/TrangChu" style="color: #aaa; text-decoration: none;">Trang chủ</a>
+        <span style="color: #444;"> / </span>
+        <a href="/HangHoa/TatCa" style="color: #aaa; text-decoration: none;">Sản phẩm</a>
+        <span style="color: #444;"> / </span>
+        <span style="color: #ffd700;">@Model.TenHang</span>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Ảnh sản phẩm -->
+        <div class="col-md-5">
+            <div class="chi-tiet-img">
+                <img src="@(string.IsNullOrEmpty(Model.HinhAnh) ? "https://via.placeholder.com/400x500" : (Model.HinhAnh.StartsWith("http") ? Model.HinhAnh : "/" + Model.HinhAnh.TrimStart('/')))"
+                     alt="@Model.TenHang">
+            </div>
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="col-md-7">
+            <div class="info-box">
+                <span class="badge-loai mb-3 d-inline-block">
+                    @(Model.MaLoaiNavigation?.TenLoai ?? "Sản phẩm")
+                </span>
+
+                <h1 class="fw-bold mb-3" style="color: #fff; font-size: 2rem;">
+                    @Model.TenHang
+                </h1>
+
+                <div class="mb-4" style="font-size: 1.8rem; font-weight: 800; color: #ffd700;">
+                    @(Model.Gia.HasValue? Model.Gia.Value.ToString("#,##0") + " ₫" : "Liên hệ")
+                </div>
+
+                <hr style="border-color: #333;">
+
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-2" style="color: #fff;">Mô tả sản phẩm</h5>
+                    <p style="color: #aaa; line-height: 1.8;">
+                        @(string.IsNullOrEmpty(Model.MoTa) ? "Sản phẩm chăm sóc tóc chính hãng được sử dụng trực tiếp tại LittleHairSalon." : Model.MoTa)
+                    </p>
+                </div>
+
+                <hr style="border-color: #333;">
+
+                <div class="d-flex gap-3 flex-wrap mt-4">
+                    <button onclick="themGio(@Model.MaHang, this)" class="btn-them-gio">
+                        🛒 Thêm vào giỏ hàng
+                    </button>
+                    <a href="/HangHoa/TatCa" class="btn-quay-lai">
+                        ← Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function themGio(maHang, btn) {
+            fetch('/GioHang/ThemVaoGio?maHang=' + maHang, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    btn.textContent = '✓ Đã thêm vào giỏ!';
+                    btn.style.backgroundColor = '#22c55e';
+                    setTimeout(() => {
+                        btn.textContent = '🛒 Thêm vào giỏ hàng';
+                        btn.style.backgroundColor = '';
+                    }, 2000);
+                }).catch(() => {});
+        }
+    </script>
+}

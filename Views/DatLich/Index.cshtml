@@ -1,0 +1,247 @@
+﻿@model LittleHairSalon.Models.LichDat
+
+@{
+    ViewData["Title"] = "Đặt lịch làm tóc - LittleHairSalon";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+<style>
+    .booking-section {
+        background-color: #000000;
+        padding: 60px 0 100px;
+        min-height: 80vh;
+    }
+
+    .booking-card {
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 40px -10px rgba(255,215,0,0.1);
+        overflow: hidden;
+        background: #1a1a1a;
+        border: 1px solid #333;
+    }
+
+    .booking-header {
+        background: #ffd700;
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+        .booking-header h2 {
+            color: #000000 !important;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .booking-header p {
+            color: #000000 !important;
+        }
+
+    .form-group-label {
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    /* ĐỔI MÀU VÀNG CHO Ô CHỌN VÀ INPUT */
+    .form-control, .form-select {
+        border-radius: 0.75rem;
+        padding: 12px 16px;
+        border: 1.5px solid #333;
+        background-color: #0a0a0a !important;
+        transition: all 0.3s ease;
+        color: #ffd700 !important; /* Giá và chữ màu vàng */
+        font-weight: 600;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ffd700;
+            background-color: #000000 !important;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2);
+        }
+
+        /* Màu cho các lựa chọn bên trong Dropdown */
+        .form-select option {
+            background-color: #1a1a1a;
+            color: #ffd700;
+        }
+
+    .btn-submit-booking {
+        background-color: #000000;
+        color: #ffd700;
+        border-radius: 50px;
+        padding: 16px 30px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        width: 100%;
+        border: 2px solid #ffd700;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+        .btn-submit-booking:hover {
+            background-color: #ffd700;
+            color: #000000;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(255, 215, 0, 0.4);
+        }
+
+    .text-danger {
+        color: #ffeb3b !important;
+    }
+
+    #moTaDichVu {
+        background: rgba(255, 215, 0, 0.05);
+        padding: 10px;
+        border-radius: 8px;
+        border-left: 3px solid #ffd700;
+        display: none; /* Ẩn mặc định, hiện khi chọn */
+    }
+</style>
+
+<section class="booking-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <h2 class="mb-2">ĐẶT LỊCH LÀM TÓC</h2>
+                        <p class="mb-0">Khám phá vẻ đẹp mới tại LittleHairSalon. Chúng tôi luôn sẵn sàng phục vụ bạn.</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form asp-action="Index" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-group-label">Dịch Vụ Mong Muốn <span class="text-danger">*</span></label>
+                                    <select asp-for="MaDichVu" class="form-select" asp-items="ViewBag.MaDichVu" id="selectDichVu" required>
+                                        <option value="">-- Chọn dịch vụ --</option>
+                                    </select>
+                                    <div id="moTaDichVu" class="mt-2 text-warning small italic">
+                                    </div>
+                                    <span asp-validation-for="MaDichVu" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-group-label">Stylist Yêu Thích (Tùy chọn)</label>
+                                    <select asp-for="MaNhanVien" class="form-select" asp-items="ViewBag.MaNhanVien">
+                                        <option value="">-- Chọn thợ ngẫu nhiên --</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-group-label">Ngày Hẹn <span class="text-danger">*</span></label>
+                                    <input asp-for="NgayDat" type="date" class="form-control" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                    <span asp-validation-for="NgayDat" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-group-label">Giờ Hẹn <span class="text-danger">*</span></label>
+                                    <select asp-for="GioDat" class="form-select" required>
+                                        <option value="">-- Chọn giờ --</option>
+                                        <option value="09:00:00">09:00 sáng</option>
+                                        <option value="09:30:00">09:30 sáng</option>
+                                        <option value="10:00:00">10:00 sáng</option>
+                                        <option value="10:30:00">10:30 sáng</option>
+                                        <option value="11:00:00">11:00 sáng</option>
+                                        <option value="11:30:00">11:30 sáng</option>
+                                        <option value="13:00:00">13:00 chiều</option>
+                                        <option value="13:30:00">13:30 chiều</option>
+                                        <option value="14:00:00">14:00 chiều</option>
+                                        <option value="14:30:00">14:30 chiều</option>
+                                        <option value="15:00:00">15:00 chiều</option>
+                                        <option value="15:30:00">15:30 chiều</option>
+                                        <option value="16:00:00">16:00 chiều</option>
+                                        <option value="16:30:00">16:30 chiều</option>
+                                        <option value="17:00:00">17:00 chiều</option>
+                                        <option value="17:30:00">17:30 chiều</option>
+                                        <option value="18:00:00">18:00 tối</option>
+                                        <option value="18:30:00">18:30 tối</option>
+                                        <option value="19:00:00">19:00 tối</option>
+                                        <option value="19:30:00">19:30 tối</option>
+                                        <option value="20:00:00">20:00 tối</option>
+                                        <option value="20:30:00">20:30 tối</option>
+                                        <option value="21:00:00">21:00 tối</option>
+                                        <option value="21:30:00">21:30 tối</option>
+                                        <option value="22:00:00">22:00 tối</option>
+                                        <option value="22:30:00">22:30 tối</option>
+                                    </select>
+                                    <span asp-validation-for="GioDat" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+
+                            @if (string.IsNullOrEmpty(Context.Session.GetString("TenDangNhap")))
+                            {
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-group-label">
+                                            Họ & Tên <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="TenKhachVangLai" class="form-control"
+                                               placeholder="Nhập họ tên của bạn..." required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-group-label">
+                                            Số Điện Thoại <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="tel" name="SdtKhachVangLai" class="form-control"
+                                               placeholder="Ví dụ: 0901234567..."
+                                               pattern="[0-9]{10,11}" required />
+                                        <small class="text-warning">Chúng tôi sẽ liên hệ xác nhận lịch qua số này.</small>
+                                    </div>
+                                </div>
+                            }
+
+
+
+                            <div class="mb-5">
+                                <label class="form-group-label">Lời Nhắn Cho Salon</label>
+                                <textarea asp-for="GhiChu" class="form-control" rows="3" placeholder="Ví dụ: Mình muốn nhuộm màu nâu khói..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit-booking">
+                                <span>XÁC NHẬN ĐẶT LỊCH NGAY</span>
+                                <span class="material-symbols-outlined">bolt</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        <span class="material-symbols-outlined align-middle fs-6 me-1" style="color:#ffd700">support_agent</span>
+                        Hotline hỗ trợ 24/7: <strong style="color:#ffd700 !important">1900 123 456</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Script để hiện mô tả khi chọn dịch vụ (Hương có thể phát triển thêm bằng Ajax nếu muốn lấy mô tả từ DB)
+        document.getElementById('selectDichVu').addEventListener('change', function() {
+            var moTaDiv = document.getElementById('moTaDichVu');
+            if(this.value !== "") {
+                moTaDiv.style.display = "block";
+                moTaDiv.innerHTML = "* Bạn đã chọn dịch vụ chất lượng cao tại salon.";
+            } else {
+                moTaDiv.style.display = "none";
+            }
+        });
+    </script>
+}
