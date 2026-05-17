@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Cấu hình Database
 var connectionString = builder.Configuration.GetConnectionString("LittleHairSalonContext") ?? "";
 builder.Services.AddDbContext<LittleHairSalonContext>(options =>
-   options.UseMySQL(connectionString);
+   options.UseMySQL(connectionString));
 // 2. Cấu hình Session & Caching
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
